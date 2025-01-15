@@ -2,6 +2,8 @@ package com.example.agenda.ui.activity;
 
 import static com.example.agenda.ui.activity.ConstantesActivities.CHAVE_ALUNO;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -53,13 +55,32 @@ public class ListAlunosActivity extends AppCompatActivity {
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         int idItem = item.getItemId(); // pega o id do item
-        if(idItem == R.id.activity_list_alunos_menu_remover) {
-            AdapterView.AdapterContextMenuInfo menuInfo =
-                    (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-            Aluno aluno = adapter.getItem(menuInfo.position);
-            remove(aluno);
+        if (idItem == R.id.activity_list_alunos_menu_remover) {
+            confirmarRemoverAluno(item);
         }
         return super.onContextItemSelected(item);
+    }
+
+    private void confirmarRemoverAluno(@NonNull MenuItem item) {
+        //cria um alerta (popup)
+        new AlertDialog.Builder(this)
+                .setTitle("Remover Aluno")
+                .setMessage("Tem certeza que deseja remover o aluno ?")
+                .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        removeAluno(item);
+                    }
+                })
+                .setNegativeButton("Não", null)
+                .show();
+    }
+
+    private void removeAluno(@NonNull MenuItem item) {
+        AdapterView.AdapterContextMenuInfo menuInfo =
+                (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        Aluno aluno = adapter.getItem(menuInfo.position);
+        remove(aluno);
     }
 
     private void atualizaAlunos() {
@@ -79,6 +100,7 @@ public class ListAlunosActivity extends AppCompatActivity {
     private void insertAluno() {
         startActivity(new Intent(this, FormularioAlunoActivity.class));
     }
+
     private void configuraLista() {
         ListView listaAlunos = findViewById(R.id.activity_list_alunos_listview);
         configuraAdapter(listaAlunos);
@@ -94,12 +116,12 @@ public class ListAlunosActivity extends AppCompatActivity {
 
     private void configuraListenerCliqueItem(ListView listaAlunos) {
         listaAlunos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Aluno edit = (Aluno) parent.getItemAtPosition(position); // pega o objeto da lista que foi enviada anteriormente para o adapter
-                editarAluno(edit);
-            }
-            }
+                                               @Override
+                                               public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                                   Aluno edit = (Aluno) parent.getItemAtPosition(position); // pega o objeto da lista que foi enviada anteriormente para o adapter
+                                                   editarAluno(edit);
+                                               }
+                                           }
         );
     }
 
