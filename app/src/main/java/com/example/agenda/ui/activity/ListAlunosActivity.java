@@ -8,7 +8,6 @@ import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -18,16 +17,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.agenda.R;
 import com.example.agenda.dao.AlunoDAO;
 import com.example.agenda.model.Aluno;
+import com.example.agenda.ui.adapter.ListAlunosAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import java.util.List;
 
 public class ListAlunosActivity extends AppCompatActivity {
 
     public static final String TITLE_APPBAR = "Lista de Alunos";
 
     private final AlunoDAO dao = new AlunoDAO();
-    private ArrayAdapter<Aluno> adapter;
+    private ListAlunosAdapter adapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,8 +66,7 @@ public class ListAlunosActivity extends AppCompatActivity {
     }
 
     private void atualizaAlunos() {
-        adapter.clear(); // limpa o adapter
-        adapter.addAll(dao.todos()); // pega a lista atualizada
+        adapter.atualiza(dao.todos());
     }
 
     private void configuraFabNovoAluno() {
@@ -92,17 +89,6 @@ public class ListAlunosActivity extends AppCompatActivity {
         //configuraListenerItemClickLong(listaAlunos);
         registerForContextMenu(listaAlunos);
     }
-
-    //private void configuraListenerItemClickLong(ListView listaAlunos) {
-    //    listaAlunos.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-    //        @Override
-    //        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-     //           Aluno alunoEncontrado = (Aluno) parent.getItemAtPosition(position);
-    //            remove(alunoEncontrado);
-    //            return  false;
-    //        }
-    //    });
-   // }
 
     private void remove(Aluno alunoEncontrado) {
         dao.remove(alunoEncontrado);
@@ -127,9 +113,7 @@ public class ListAlunosActivity extends AppCompatActivity {
     }
 
     private void configuraAdapter(ListView listaAlunos) {
-        adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_list_item_1);
+        adapter = new ListAlunosAdapter(this);
         listaAlunos.setAdapter(adapter);
     }
 }
