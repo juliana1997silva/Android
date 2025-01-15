@@ -36,7 +36,7 @@ public class Aluno implements Serializable {
     @NonNull
     @Override
     public String toString() {
-        return nomeAluno;
+        return nomeAluno + " - " + telefoneAluno;
     }
 
     public String getTelefoneAluno() {
